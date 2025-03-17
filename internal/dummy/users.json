@@ -1,0 +1,9 @@
+[
+    {
+        "Id": "accountId",
+        "email": "email@email.com",
+        "Newsletters": [
+            "test newsletter"
+        ]
+    }
+]

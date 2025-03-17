@@ -1,0 +1,43 @@
+# Binaries and build artifacts
+/bin/
+/pkg/
+/build/
+*.exe
+*.out
+*.a
+*.so
+
+# Go Modules
+/go.sum
+/go.mod
+/vendor/
+
+# Compiled object files
+*.o
+*.a
+*.lo
+*.la
+*.lai
+*.so
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and debugging files
+*.log
+*.test
+
+# Temporary files
+/tmp/
+/cache/
+.DS_Store
+
+# Coverage reports
+/coverage.out
+*.coverprofile
+
+# Generated files
+gen/

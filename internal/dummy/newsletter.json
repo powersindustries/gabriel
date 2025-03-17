@@ -1,0 +1,11 @@
+[
+    {
+        "Id": "test newsletter",
+        "Name": "Test Newsletter",
+        "Description": "Test Newsletter.",
+        "ContactEmail": "contact@techinsights.com",
+        "UserList": [
+            "email@email.com"
+        ]
+    }
+]
