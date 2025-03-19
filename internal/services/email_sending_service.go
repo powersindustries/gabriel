@@ -44,6 +44,11 @@ func SendNewsletterEmail(newsletterId string) error {
 		return errors.New("failed to get the newsletter object from scheduler service")
 	}
 
+	// Make sure content is ready to be sent out. Dont sent emails if not ready to send.
+	if !ContentShouldSendByNewsletterId(newsletterId) {
+		return nil
+	}
+
 	// Get email content.
 	emailContent, err := GetEmailContentByNewsletterId(newsletterId)
 

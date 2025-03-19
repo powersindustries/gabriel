@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"github.com/yuin/goldmark"
 )
@@ -34,6 +35,28 @@ func InitializeContentService() {
 	if erro != nil {
 		log.Fatal(erro)
 	}
+}
+
+// Look at the content in a newsletter and check that it is ready to be sent out.
+func ContentShouldSendByNewsletterId(newsletterId string) bool {
+	currUnixTime := time.Now().Unix()
+
+	contentArraySize := len(contentArray)
+	for x := 0; x < contentArraySize; x++ {
+		currContent := contentArray[x]
+
+		// Iterate through newsletters and find content for newsletter.
+		newslettersArraySize := len(currContent.NewsletterId)
+		for y := 0; y < newslettersArraySize; y++ {
+			if newsletterId == currContent.NewsletterId[y] {
+				if currUnixTime >= currContent.ReleaseDate {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
 }
 
 func GetEmailContentByNewsletterId(newsletterId string) ([]byte, error) {
