@@ -33,35 +33,25 @@ func InitializeEmailSendingService() {
 	authentification = smtp.PlainAuth("", fromAddress, password, smtpHost)
 }
 
-func SendEmailByContentId(content string) error {
-	emailContent, err := GetEmailContentById(content)
+// Sends out a newsletter's email by newsletter id.
+func SendNewsletterEmail(newsletterId string) error {
+	var err error
+
+	// Get newsletter object.
+	newsletterObject, err := GetNewsletterObjectById(newsletterId)
 	if err != nil {
-		return errors.New("failed to find content by id")
+		println("Failed to get the newsletter object from scheduler service.")
+		return errors.New("failed to get the newsletter object from scheduler service")
 	}
 
-	if emailContent != nil {
-		// Get users.
-		newsletterIds, err := GetNewsletterIdByContentId(content)
-		if err != nil {
-			return errors.New("failed to get newsletter ids")
-		}
+	// Get email content.
+	emailContent, err := GetEmailContentByNewsletterId(newsletterId)
 
-		var toEmails []string
-
-		newsletterIdsSize := len(newsletterIds)
-		for x := 0; x < newsletterIdsSize; x++ {
-			emails := GetAllUsersByNewsletterId(newsletterIds[x])
-			for y := 0; y < len(emails); y++ {
-				toEmails = append(toEmails, emails[y])
-			}
-		}
-
-		erro := smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, toEmails, emailContent)
-		if erro != nil {
-			fmt.Println("Failed to send email:", erro)
-			return errors.New("failed to send email")
-		}
+	// Send email.
+	err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, newsletterObject.UserList, emailContent)
+	if err != nil {
+		fmt.Println("Failed to send email:", err)
+		return errors.New("failed to send email")
 	}
-
 	return nil
 }

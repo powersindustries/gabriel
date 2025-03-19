@@ -7,20 +7,20 @@ import (
 // ToDo: Replace functionality with DEBUG flag. Used for only running scheduler 3 times, then stopping application.
 var runCount int = 0
 
-var scheduledContent []string
+// Array of Newsletter Ids.
+var scheduledNewsletterIds []string
 
-func RunContentScheduler() {
+func CycleContentScheduler() {
 	println("Running content scheduler...")
 
-	scheduledContentLength := len(scheduledContent)
-	for x := 0; x < scheduledContentLength; x++ {
-		currContentId := scheduledContent[x]
-		if ContentAvailableForSending(currContentId) {
-			err := SendEmailByContentId(currContentId)
-			if err != nil {
-				println("Failed to send email: ", err)
-				return
-			}
+	scheduledNewsletterIdsLength := len(scheduledNewsletterIds)
+	for x := 0; x < scheduledNewsletterIdsLength; x++ {
+		currNewsletterId := scheduledNewsletterIds[x]
+
+		err := SendNewsletterEmail(currNewsletterId)
+		if err != nil {
+			println("Failed to send email: ", err)
+			return
 		}
 	}
 
@@ -33,5 +33,5 @@ func RunContentScheduler() {
 }
 
 func AddContentToScheduler(contentId string) {
-	scheduledContent = append(scheduledContent, contentId)
+	scheduledNewsletterIds = append(scheduledNewsletterIds, contentId)
 }

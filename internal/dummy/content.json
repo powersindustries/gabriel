@@ -1,31 +1,9 @@
 [
     {
         "Id": "test txt",
-        "Title": "Test txt Subjectline",
+        "Title": "Test Subjectline",
         "ReleaseDate": 123,
-        "ContentType": 0,
-        "ContentId": "test",
-        "SentState": false,
-        "NewsletterId": [
-            "test newsletter"
-        ]
-    },
-    {
-        "Id": "test md",
-        "Title": "Test Md Subjectline",
-        "ReleaseDate": 123,
-        "ContentType": 1,
-        "ContentId": "test",
-        "SentState": false,
-        "NewsletterId": [
-            "test newsletter"
-        ]
-    },
-    {
-        "Id": "test html",
-        "Title": "Test Html Subjectline",
-        "ReleaseDate": 123,
-        "ContentType": 2,
+        "ContentType": ".md",
         "ContentId": "test",
         "SentState": false,
         "NewsletterId": [

@@ -3,12 +3,16 @@
 package services
 
 import (
+	"bytes"
 	"email_poc/internal/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/yuin/goldmark"
 )
 
 var contentArray []models.Content
@@ -32,52 +36,56 @@ func InitializeContentService() {
 	}
 }
 
-func ContentAvailableForSending(contentId string) bool {
-	return true
+func GetEmailContentByNewsletterId(newsletterId string) ([]byte, error) {
+	contentArraySize := len(contentArray)
+	for x := 0; x < contentArraySize; x++ {
+		currContent := contentArray[x]
+
+		// Iterate through newsletters and find content for newsletter.
+		newslettersArraySize := len(currContent.NewsletterId)
+		for y := 0; y < newslettersArraySize; y++ {
+			if newsletterId == currContent.NewsletterId[y] {
+				// Content found. Now get raw.
+				rawContent, err := getRawContentByObject(&currContent)
+				if err != nil {
+					println("Failed to get the raw content from the content object.")
+					return nil, errors.New("failed to get the raw content from the content object")
+				}
+
+				subject := "Subject: " + currContent.Title + "\r\n"
+				mime := "MIME-version: 1.0;\r\nContent-Type: text/html; charset=\"UTF-8\";\r\n"
+				if currContent.ContentType == ".txt" {
+					mime = "MIME-version: 1.0;\r\nContent-Type: text/plain; charset=\"UTF-8\";\r\n"
+				}
+
+				if currContent.ContentType == ".md" {
+					var buf bytes.Buffer
+					err := goldmark.Convert(rawContent, &buf)
+					if err != nil {
+						fmt.Println("Error:", err)
+						return nil, errors.New("failed to markdown to html")
+					}
+
+					return []byte(subject + mime + "\r\n" + buf.String()), nil
+				}
+
+				return []byte(subject + mime + "\r\n" + string(rawContent)), nil
+			}
+		}
+	}
+
+	return nil, errors.New("failed to find content by id")
 }
 
-// ToDo: Pull raw content from database.
-func GetEmailContentById(id string) ([]byte, error) {
-	contentObject, err := getContentById(id)
+// ToDo: Replace with actual call to database. Below is temp/debug logic.
+func getRawContentByObject(contentObject *models.Content) ([]byte, error) {
+
+	path := "internal/dummy/content/" + contentObject.ContentId + contentObject.ContentType
+	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, errors.New("failed to find content by id")
+		log.Fatal(err)
+		return nil, errors.New("failed to load raw content by id")
 	}
 
-	subject := "Subject: " + contentObject.Title + "\r\n"
-	mime := "MIME-version: 1.0;\r\nContent-Type: text/plain; charset=\"UTF-8\";\r\n"
-	body := `
-		<html>
-		<body>
-			<h2>Welcome!</h2>
-			<p>Thank you for subscribing to our newsletter.</p>
-			<p><strong>Enjoy the latest updates!</strong></p>
-		</body>
-		</html>
-	`
-
-	return []byte(subject + mime + "\r\n" + body), nil
-}
-
-func GetNewsletterIdByContentId(id string) ([]string, error) {
-	contentArraySize := len(contentArray)
-	for x := 0; x < contentArraySize; x++ {
-		currContent := contentArray[x]
-		if id == currContent.Id {
-			return currContent.NewsletterId, nil
-		}
-	}
-
-	return nil, errors.New("failed to find content by id")
-}
-
-func getContentById(id string) (*models.Content, error) {
-	contentArraySize := len(contentArray)
-	for x := 0; x < contentArraySize; x++ {
-		currContent := contentArray[x]
-		if id == currContent.Id {
-			return &currContent, nil
-		}
-	}
-
-	return nil, errors.New("failed to find content by id")
+	return data, nil
 }

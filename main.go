@@ -29,10 +29,8 @@ func main() {
 
 				services.InitializeEmailSendingService()
 
-				// -----------------
-				// Testing
-				// -----------------
-				services.AddContentToScheduler("test txt")
+				// ToDo: Remove and replace with endpoint.
+				services.AddContentToScheduler("test newsletter")
 
 				services.SetLifecycle(models.Running)
 			}
@@ -40,7 +38,7 @@ func main() {
 			{
 				select {
 				case <-ticker.C:
-					services.RunContentScheduler()
+					services.CycleContentScheduler()
 				default:
 					// Yield CPU time to avoid busy waiting
 					// time.Sleep(100 * time.Millisecond)
@@ -49,7 +47,7 @@ func main() {
 		case models.Stopping:
 			{
 				fmt.Println("Gabriel Stopping.")
-				return // Exit program when stopping
+				return
 			}
 		default:
 			{

@@ -1,13 +1,5 @@
 package models
 
-type ContentType int
-
-const (
-	Text ContentType = iota
-	Markdown
-	Html
-)
-
 // Email that gets sent to every user in a given newsletter.
 type Content struct {
 	Id string `json:"Id"`
@@ -22,7 +14,7 @@ type Content struct {
 	ReleaseDate int64 `json:"ReleaseDate"`
 
 	// Content type (.txt, .md, or .html file).
-	Type ContentType `json:"Type"`
+	ContentType string `json:"ContentType"`
 
 	// Content ID. Used for finding the content file in the db.
 	ContentId string `json:"ContentId"`
