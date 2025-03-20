@@ -2,11 +2,12 @@ package models
 
 // User or Subscriber who joins a news letter.
 type User struct {
-	Id string
+	// UUID for the unique user.
+	UUId string
 
 	// Email that gets used when subscribing to an email.
 	Email string
 
-	// all the newsletters that user subscribes to in the Gabriel network.
-	Newsletters []string
+	// All the newsletters that the user subscribes to in the Gabriel network.
+	NewsletterUUIds []string
 }

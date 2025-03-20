@@ -14,7 +14,7 @@ var usersArray []models.User
 
 // ToDo: Update for pulling data from database.
 func InitializeUsers() {
-	file, err := os.Open("internal/dummy/users.json")
+	file, err := os.Open("internal/s3/users.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,6 +29,18 @@ func InitializeUsers() {
 	if erro != nil {
 		log.Fatal(erro)
 	}
+}
+
+func GetUserEmailByUUId(uUId string) string {
+	userArraySize := len(usersArray)
+	for x := 0; x < userArraySize; x++ {
+		currUser := usersArray[x]
+		if uUId == currUser.UUId {
+			return currUser.Email
+		}
+	}
+
+	return ""
 }
 
 func GetAllUsersByNewsletterId(newsletterId string) []string {

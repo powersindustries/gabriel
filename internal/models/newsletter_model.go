@@ -2,7 +2,7 @@ package models
 
 // Top level class for the Newsletter.
 type Newsletter struct {
-	Id string
+	UUId string
 
 	// Display name of the Newsletter.
 	Name string
@@ -13,6 +13,6 @@ type Newsletter struct {
 	// Contact for the newsletter.
 	ContactEmail string
 
-	// Subscriber list.
+	// List of all the user's who subscribe to this newsletter by UUId.
 	UserList []string
 }

@@ -1,0 +1,11 @@
+[
+    {
+        "UUId": "75366d64-d13c-457e-a88e-d56e680748ed",
+        "Name": "Test Newsletter",
+        "Description": "Test Newsletter.",
+        "ContactEmail": "email@email.com",
+        "UserList": [
+            "f3572740-972d-4abe-af31-7c14e96e1946"
+        ]
+    }
+]

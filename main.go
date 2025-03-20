@@ -30,7 +30,7 @@ func main() {
 				services.InitializeEmailSendingService()
 
 				// ToDo: Remove and replace with endpoint.
-				services.AddContentToScheduler("test newsletter")
+				services.AddContentToScheduler("ea36aeeb-f1d4-49cf-9f1d-34bb47d928d7")
 
 				services.SetLifecycle(models.Running)
 			}

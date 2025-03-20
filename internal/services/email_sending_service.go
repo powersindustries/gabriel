@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/smtp"
+	"time"
 )
 
 var smtpHost = "smtp.gmail.com"
@@ -33,30 +34,39 @@ func InitializeEmailSendingService() {
 	authentification = smtp.PlainAuth("", fromAddress, password, smtpHost)
 }
 
-// Sends out a newsletter's email by newsletter id.
-func SendNewsletterEmail(newsletterId string) error {
+// Sends out a content's email by content UUId.
+func SendEmailByContentUUId(contentUUId string) error {
 	var err error
 
-	// Get newsletter object.
-	newsletterObject, err := GetNewsletterObjectById(newsletterId)
+	// Get content object.
+	contentObject, err := GetContentObjectByUUId(contentUUId)
 	if err != nil {
-		println("Failed to get the newsletter object from scheduler service.")
-		return errors.New("failed to get the newsletter object from scheduler service")
+		println("Failed to get the content object from scheduler service.")
+		return errors.New("failed to get the content object from scheduler service")
 	}
 
-	// Make sure content is ready to be sent out. Dont sent emails if not ready to send.
-	if !ContentShouldSendByNewsletterId(newsletterId) {
-		return nil
-	}
+	// Dont send content emails if not ready to send.
+	currUnixTime := time.Now().Unix()
+	if currUnixTime >= contentObject.ReleaseDate {
 
-	// Get email content.
-	emailContent, err := GetEmailContentByNewsletterId(newsletterId)
+		// Get email content.
+		emailContent, err := GetEmailContentByContentUUId(contentUUId)
+		if err != nil {
+			fmt.Println("Failed to get email content by content UUId:", err)
+			return errors.New("failed to get email content by content UUId")
+		}
 
-	// Send email.
-	err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, newsletterObject.UserList, emailContent)
-	if err != nil {
-		fmt.Println("Failed to send email:", err)
-		return errors.New("failed to send email")
+		// Get email userlist.
+		userList := GetNewsletterUserlistByNewsletterUUId(contentObject.NewsletterUUId)
+		if len(userList) > 0 {
+
+			// Send email.
+			err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, userList, emailContent)
+			if err != nil {
+				fmt.Println("Failed to send email:", err)
+				return errors.New("failed to send email")
+			}
+		}
 	}
 	return nil
 }
