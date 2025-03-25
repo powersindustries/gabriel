@@ -25,7 +25,6 @@ func main() {
 				config.LoadEnvData()
 				config.InitializeDatabase()
 
-				services.InitializeNewsletterService()
 				services.InitializeContentService()
 				services.InitializeEmailSendingService()
 

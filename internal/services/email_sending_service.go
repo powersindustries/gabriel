@@ -55,7 +55,7 @@ func SendEmailByContentUUId(contentUUId string) error {
 		}
 
 		// Get email subscriber list.
-		subscriberEmailList := GetNewsletterSubscribersByNewsletterUUId(contentObject.NewsletterUUId)
+		subscriberEmailList := GetNewsletterSubscriberEmailsByNewsletterUUId(contentObject.NewsletterUUId)
 		if len(subscriberEmailList) > 0 {
 
 			// Send email.
