@@ -21,12 +21,12 @@ func main() {
 		case models.Initialing:
 			{
 				fmt.Println("Gabriel Initializing.")
+
 				config.LoadEnvData()
+				config.InitializeDatabase()
 
 				services.InitializeNewsletterService()
-				services.InitializeUsers()
 				services.InitializeContentService()
-
 				services.InitializeEmailSendingService()
 
 				// ToDo: Remove and replace with endpoint.

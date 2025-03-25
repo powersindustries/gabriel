@@ -17,16 +17,14 @@ var password string
 var authentification smtp.Auth
 
 func InitializeEmailSendingService() {
-	var err error
-
-	fromAddress, err = config.GetEnvVariables("user")
-	if err != nil {
+	fromAddress = config.GetEnvVariables("user")
+	if len(fromAddress) == 0 {
 		println("Failed to get the host from address.")
 		return
 	}
 
-	password, err = config.GetEnvVariables("password")
-	if err != nil {
+	password = config.GetEnvVariables("password")
+	if len(password) == 0 {
 		println("Failed to get the password from address.")
 		return
 	}

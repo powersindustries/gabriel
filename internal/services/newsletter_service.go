@@ -5,7 +5,6 @@ package services
 import (
 	"email_poc/internal/models"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -30,18 +29,6 @@ func InitializeNewsletterService() {
 	if erro != nil {
 		log.Fatal(erro)
 	}
-}
-
-func GetNewsletterObjectById(id string) (*models.Newsletter, error) {
-	newsletterArraySize := len(newsletterArray)
-	for x := 0; x < newsletterArraySize; x++ {
-		currNewsletter := newsletterArray[x]
-		if id == currNewsletter.UUId {
-			return &currNewsletter, nil
-		}
-	}
-
-	return nil, errors.New("failed to find content by id")
 }
 
 func GetNewsletterUserlistByNewsletterUUId(newsletterUUId string) []string {

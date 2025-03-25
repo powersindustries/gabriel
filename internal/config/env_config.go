@@ -3,7 +3,6 @@ package config
 import (
 	"bufio"
 	"email_poc/internal/models"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -22,35 +21,41 @@ func setEnvVariables(key string, value string) {
 		environmentVariables.EmailUser = value
 	case "EMAIL_PASS":
 		environmentVariables.EmailPassword = value
+	case "DB_NAME":
+		environmentVariables.DbName = value
+	case "DB_USER":
+		environmentVariables.DbUser = value
+	case "DB_PASS":
+		environmentVariables.DbPassword = value
 	default:
 		fmt.Println("env key not found: ", key)
 		return
 	}
 }
 
-func GetEnvVariables(key string) (string, error) {
+func GetEnvVariables(key string) string {
 	if len(key) == 0 {
-		return "", errors.New("key is empty")
+		return ""
 	}
 
 	switch key {
 	case "user":
-		return environmentVariables.EmailUser, nil
+		return environmentVariables.EmailUser
 	case "password":
-		return environmentVariables.EmailPassword, nil
+		return environmentVariables.EmailPassword
+	case "dbname":
+		return environmentVariables.DbName
+	case "dbuser":
+		return environmentVariables.DbUser
+	case "dbpass":
+		return environmentVariables.DbPassword
 	default:
-		return "", errors.New("key does not exist in env")
+		return ""
 	}
 }
 
 func LoadEnvData() {
-	rootPath, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Failed to get the root path: ", err)
-		return
-	}
-
-	file, err := os.Open(rootPath + "/.env")
+	file, err := os.Open(".env")
 	if err != nil {
 		fmt.Println("Failed to load .env file: ", err)
 		return
