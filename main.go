@@ -25,7 +25,6 @@ func main() {
 				config.LoadEnvData()
 				config.InitializeDatabase()
 
-				services.InitializeContentService()
 				services.InitializeEmailSendingService()
 
 				// ToDo: Remove and replace with endpoint.
