@@ -4,7 +4,7 @@
         "Name": "Test Newsletter",
         "Description": "Test Newsletter.",
         "ContactEmail": "email@email.com",
-        "UserList": [
+        "SubscriberList": [
             "f3572740-972d-4abe-af31-7c14e96e1946"
         ]
     }

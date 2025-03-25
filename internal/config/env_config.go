@@ -39,15 +39,15 @@ func GetEnvVariables(key string) string {
 	}
 
 	switch key {
-	case "user":
+	case "email_user":
 		return environmentVariables.EmailUser
-	case "password":
+	case "email_password":
 		return environmentVariables.EmailPassword
-	case "dbname":
+	case "db_name":
 		return environmentVariables.DbName
-	case "dbuser":
+	case "db_user":
 		return environmentVariables.DbUser
-	case "dbpass":
+	case "db_pass":
 		return environmentVariables.DbPassword
 	default:
 		return ""

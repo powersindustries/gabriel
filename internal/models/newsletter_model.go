@@ -13,6 +13,6 @@ type Newsletter struct {
 	// Contact for the newsletter.
 	ContactEmail string
 
-	// List of all the user's who subscribe to this newsletter by UUId.
-	UserList []string
+	// List of all the subscribers who subscribe to this newsletter by UUId.
+	SubscriberList []string
 }

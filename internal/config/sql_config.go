@@ -12,7 +12,7 @@ import (
 var Database *sql.DB
 
 func InitializeDatabase() {
-	dsn := "postgres://" + GetEnvVariables("dbuser") + ":" + GetEnvVariables("dbpass") + "@localhost:5432/" + GetEnvVariables("dbname")
+	dsn := "postgres://" + GetEnvVariables("db_user") + ":" + GetEnvVariables("db_pass") + "@localhost:5432/" + GetEnvVariables("db_name")
 
 	var err error
 

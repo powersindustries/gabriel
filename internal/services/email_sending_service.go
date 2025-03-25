@@ -17,13 +17,13 @@ var password string
 var authentification smtp.Auth
 
 func InitializeEmailSendingService() {
-	fromAddress = config.GetEnvVariables("user")
+	fromAddress = config.GetEnvVariables("email_user")
 	if len(fromAddress) == 0 {
 		println("Failed to get the host from address.")
 		return
 	}
 
-	password = config.GetEnvVariables("password")
+	password = config.GetEnvVariables("email_password")
 	if len(password) == 0 {
 		println("Failed to get the password from address.")
 		return
@@ -54,12 +54,12 @@ func SendEmailByContentUUId(contentUUId string) error {
 			return errors.New("failed to get email content by content UUId")
 		}
 
-		// Get email userlist.
-		userList := GetNewsletterUserlistByNewsletterUUId(contentObject.NewsletterUUId)
-		if len(userList) > 0 {
+		// Get email subscriber list.
+		subscriberEmailList := GetNewsletterSubscribersByNewsletterUUId(contentObject.NewsletterUUId)
+		if len(subscriberEmailList) > 0 {
 
 			// Send email.
-			err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, userList, emailContent)
+			err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, subscriberEmailList, emailContent)
 			if err != nil {
 				fmt.Println("Failed to send email:", err)
 				return errors.New("failed to send email")

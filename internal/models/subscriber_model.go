@@ -1,7 +1,7 @@
 package models
 
-// User or Subscriber who joins a news letter.
-type User struct {
+// Subscriber who joins a newsletter.
+type Subscriber struct {
 	// UUID for the unique user.
 	UUId string
 

@@ -31,21 +31,21 @@ func InitializeNewsletterService() {
 	}
 }
 
-func GetNewsletterUserlistByNewsletterUUId(newsletterUUId string) []string {
+func GetNewsletterSubscribersByNewsletterUUId(newsletterUUId string) []string {
 	newsletterArraySize := len(newsletterArray)
 	for x := 0; x < newsletterArraySize; x++ {
 		currNewsletter := newsletterArray[x]
 		if newsletterUUId == currNewsletter.UUId {
-			var outputUserList []string
-			userListSize := len(currNewsletter.UserList)
-			for y := 0; y < userListSize; y++ {
-				userEmail := GetUserEmailByUUId(currNewsletter.UserList[y])
-				if len(userEmail) > 0 {
-					outputUserList = append(outputUserList, userEmail)
+			var outputSubscriberList []string
+			subscriberListSize := len(currNewsletter.SubscriberList)
+			for y := 0; y < subscriberListSize; y++ {
+				subscriberEmail := GetSubscriberEmailByUUId(currNewsletter.SubscriberList[y])
+				if len(subscriberEmail) > 0 {
+					outputSubscriberList = append(outputSubscriberList, subscriberEmail)
 				}
 			}
 
-			return outputUserList
+			return outputSubscriberList
 		}
 	}
 
