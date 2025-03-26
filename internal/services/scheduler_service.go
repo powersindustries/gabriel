@@ -4,20 +4,33 @@ import (
 	"email_poc/internal/models"
 )
 
-// ToDo: Replace functionality with DEBUG flag. Used for only running scheduler 3 times, then stopping application.
-var runCount int = 0
+type SchedulerService struct {
+	emailSendingService *EmailSendingService
 
-// Array of content UUIds.
-var scheduledContentUUIds []string
+	scheduledContentUUIds []string
+	// ToDo: Replace functionality with DEBUG flag. Used for only running scheduler 3 times, then stopping application.
+	runCount int
+}
 
-func CycleContentScheduler() {
+func CreateNewSchedulerService(emailSendingService *EmailSendingService) *SchedulerService {
+	outputObject := &SchedulerService{}
+
+	outputObject.emailSendingService = emailSendingService
+
+	// ToDo: Debug.
+	outputObject.runCount = 0
+
+	return outputObject
+}
+
+func (this *SchedulerService) CycleContentScheduler() {
 	println("Running content scheduler...")
 
-	scheduledContentUUIdsLength := len(scheduledContentUUIds)
+	scheduledContentUUIdsLength := len(this.scheduledContentUUIds)
 	for x := 0; x < scheduledContentUUIdsLength; x++ {
-		currContentUUId := scheduledContentUUIds[x]
+		currContentUUId := this.scheduledContentUUIds[x]
 
-		err := SendEmailByContentUUId(currContentUUId)
+		err := this.emailSendingService.SendEmailByContentUUId(currContentUUId)
 		if err != nil {
 			println("Failed to send email: ", err)
 			return
@@ -25,13 +38,13 @@ func CycleContentScheduler() {
 	}
 
 	// ToDo: Replace functionality with DEBUG flag.
-	if runCount == 2 {
+	if this.runCount == 2 {
 		SetLifecycle(models.Stopping)
 		return
 	}
-	runCount++
+	this.runCount++
 }
 
-func AddContentToScheduler(contentId string) {
-	scheduledContentUUIds = append(scheduledContentUUIds, contentId)
+func (this *SchedulerService) AddContentToScheduler(contentId string) {
+	this.scheduledContentUUIds = append(this.scheduledContentUUIds, contentId)
 }

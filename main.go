@@ -3,6 +3,7 @@ package main
 import (
 	"email_poc/internal/config"
 	"email_poc/internal/models"
+	"email_poc/internal/repository"
 	"email_poc/internal/services"
 	"fmt"
 	"time"
@@ -10,6 +11,19 @@ import (
 
 func main() {
 	fmt.Println("Gabriel.")
+
+	config.LoadEnvData()
+	config.InitializeDatabase()
+
+	contentRepository := repository.CreateNewContentRepository()
+	newsletterRepository := repository.CreateNewNewsletterRepository()
+	subscriberRepository := repository.CreateNewSubscriberRepository()
+
+	contentService := services.CreateNewContentService(contentRepository)
+	subscriberService := services.CreateNewSubscriberService(subscriberRepository)
+	newsletterService := services.CreateNewNewsletterService(newsletterRepository, subscriberService)
+	emailSendingService := services.CreateNewEmailSendingService(contentService, newsletterService)
+	schedulerService := services.CreateNewSchedulerService(emailSendingService)
 
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
@@ -22,13 +36,8 @@ func main() {
 			{
 				fmt.Println("Gabriel Initializing.")
 
-				config.LoadEnvData()
-				config.InitializeDatabase()
-
-				services.InitializeEmailSendingService()
-
-				// ToDo: Remove and replace with endpoint.
-				services.AddContentToScheduler("ea36aeeb-f1d4-49cf-9f1d-34bb47d928d7")
+				// ToDo: Debug - Remove and replace with endpoint.
+				schedulerService.AddContentToScheduler("ea36aeeb-f1d4-49cf-9f1d-34bb47d928d7")
 
 				services.SetLifecycle(models.Running)
 			}
@@ -36,7 +45,7 @@ func main() {
 			{
 				select {
 				case <-ticker.C:
-					services.CycleContentScheduler()
+					schedulerService.CycleContentScheduler()
 				default:
 					// Yield CPU time to avoid busy waiting
 					// time.Sleep(100 * time.Millisecond)

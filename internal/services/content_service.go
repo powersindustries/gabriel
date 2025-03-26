@@ -10,17 +10,25 @@ import (
 	"github.com/yuin/goldmark"
 )
 
-func GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
-	return repository.GetContentObjectByUUId(contentUUId)
+type ContentService struct {
+	contentRepository repository.ContentRepository
 }
 
-func GetEmailContentByContentUUId(contentUUId string) ([]byte, error) {
-	contentObject, err := GetContentObjectByUUId(contentUUId)
+func CreateNewContentService(repository repository.ContentRepository) *ContentService {
+	return &ContentService{contentRepository: repository}
+}
+
+func (this *ContentService) GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
+	return this.contentRepository.GetContentObjectByUUId(contentUUId)
+}
+
+func (this *ContentService) GetEmailContentByContentUUId(contentUUId string) ([]byte, error) {
+	contentObject, err := this.GetContentObjectByUUId(contentUUId)
 	if contentObject == nil || err != nil {
 		return nil, errors.New("failed to find content by id")
 	}
 
-	rawContent, err := repository.GetRawContentByObject(contentObject)
+	rawContent, err := this.contentRepository.GetRawContentByObject(contentObject)
 	if err != nil {
 		println("Failed to get the raw content from the content object.")
 		return nil, errors.New("failed to get the raw content from the content object")

@@ -10,7 +10,17 @@ import (
 	"github.com/lib/pq"
 )
 
-func GetNewsletterByUUId(newsletterUUId string) (*models.Newsletter, error) {
+type NewsletterRepository interface {
+	GetNewsletterByUUId(newsletterUUId string) (*models.Newsletter, error)
+}
+
+type newsletterRepository struct{}
+
+func CreateNewNewsletterRepository() NewsletterRepository {
+	return &newsletterRepository{}
+}
+
+func (this *newsletterRepository) GetNewsletterByUUId(newsletterUUId string) (*models.Newsletter, error) {
 	sqlQuery := `
 		SELECT uuid, name, description, contact_email, subscriber_list 
 		FROM newsletters 

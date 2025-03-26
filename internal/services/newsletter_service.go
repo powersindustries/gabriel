@@ -1,10 +1,24 @@
 package services
 
-import "email_poc/internal/repository"
+import (
+	"email_poc/internal/repository"
+)
 
-func GetNewsletterSubscriberEmailsByNewsletterUUId(newsletterUUId string) []string {
+type NewsletterService struct {
+	newsletterRepository repository.NewsletterRepository
+	subscriberService    *SubscriberService
+}
 
-	newsletterObject, err := repository.GetNewsletterByUUId(newsletterUUId)
+func CreateNewNewsletterService(repository repository.NewsletterRepository, subscriberService *SubscriberService) *NewsletterService {
+	return &NewsletterService{
+		newsletterRepository: repository,
+		subscriberService:    subscriberService,
+	}
+}
+
+func (this *NewsletterService) GetNewsletterSubscriberEmailsByNewsletterUUId(newsletterUUId string) []string {
+
+	newsletterObject, err := this.newsletterRepository.GetNewsletterByUUId(newsletterUUId)
 	if err != nil {
 		println("Failed to find the newsletter UUID with the id: " + newsletterUUId)
 		return nil
@@ -19,7 +33,7 @@ func GetNewsletterSubscriberEmailsByNewsletterUUId(newsletterUUId string) []stri
 	var outputEmail []string
 
 	for x := 0; x < subscriberListSize; x++ {
-		currEmail := GetSubscriberEmailByUUId(newsletterObject.SubscriberList[x])
+		currEmail := this.subscriberService.GetSubscriberEmailByUUId(newsletterObject.SubscriberList[x])
 		if len(currEmail) > 0 {
 			outputEmail = append(outputEmail, currEmail)
 		}

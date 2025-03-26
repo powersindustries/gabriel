@@ -10,7 +10,18 @@ import (
 	"os"
 )
 
-func GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
+type ContentRepository interface {
+	GetContentObjectByUUId(contentUUId string) (*models.Content, error)
+	GetRawContentByObject(contentObject *models.Content) ([]byte, error)
+}
+
+type contentRepository struct{}
+
+func CreateNewContentRepository() ContentRepository {
+	return &contentRepository{}
+}
+
+func (this *contentRepository) GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
 	sqlQuery := `
 		SELECT uuid, title, release_date, type, newsletter_uuid 
 		FROM content 
@@ -30,7 +41,7 @@ func GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
 }
 
 // ToDo: Replace with actual call to s3 bucket. Below is temp/debug logic.
-func GetRawContentByObject(contentObject *models.Content) ([]byte, error) {
+func (this *contentRepository) GetRawContentByObject(contentObject *models.Content) ([]byte, error) {
 
 	path := "internal/s3/" + contentObject.NewsletterUUId + "/" + contentObject.UUId + contentObject.Type
 	data, err := os.ReadFile(path)

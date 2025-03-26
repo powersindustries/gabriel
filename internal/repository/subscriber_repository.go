@@ -9,7 +9,17 @@ import (
 	"github.com/lib/pq"
 )
 
-func GetSubscriberEmailByUUId(uUId string) string {
+type SubscriberRepository interface {
+	GetSubscriberEmailByUUId(uUId string) string
+}
+
+type subscriberRepository struct{}
+
+func CreateNewSubscriberRepository() SubscriberRepository {
+	return &subscriberRepository{}
+}
+
+func (this *subscriberRepository) GetSubscriberEmailByUUId(uUId string) string {
 	sqlQuery := "SELECT uuid, email, newsletter_uuids FROM subscribers WHERE uuid = $1"
 	var subscriber models.Subscriber
 

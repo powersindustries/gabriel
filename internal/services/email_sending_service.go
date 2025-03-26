@@ -8,36 +8,48 @@ import (
 	"time"
 )
 
-var smtpHost = "smtp.gmail.com"
-var smtpPort = "587"
+type EmailSendingService struct {
+	contentService    *ContentService
+	newsletterService *NewsletterService
 
-var fromAddress string
-var password string
+	smtpHost         string
+	smtpPort         string
+	fromAddress      string
+	password         string
+	authentification smtp.Auth
+}
 
-var authentification smtp.Auth
+func CreateNewEmailSendingService(contentService *ContentService, newsletterService *NewsletterService) *EmailSendingService {
+	outputObject := &EmailSendingService{}
 
-func InitializeEmailSendingService() {
-	fromAddress = config.GetEnvVariables("email_user")
-	if len(fromAddress) == 0 {
+	outputObject.contentService = contentService
+	outputObject.newsletterService = newsletterService
+
+	outputObject.smtpHost = "smtp.gmail.com"
+	outputObject.smtpPort = "587"
+	outputObject.fromAddress = config.GetEnvVariables("email_user")
+	if len(outputObject.fromAddress) == 0 {
 		println("Failed to get the host from address.")
-		return
+		return nil
 	}
 
-	password = config.GetEnvVariables("email_password")
-	if len(password) == 0 {
+	outputObject.password = config.GetEnvVariables("email_password")
+	if len(outputObject.password) == 0 {
 		println("Failed to get the password from address.")
-		return
+		return nil
 	}
 
-	authentification = smtp.PlainAuth("", fromAddress, password, smtpHost)
+	outputObject.authentification = smtp.PlainAuth("", outputObject.fromAddress, outputObject.password, outputObject.smtpHost)
+
+	return outputObject
 }
 
 // Sends out a content's email by content UUId.
-func SendEmailByContentUUId(contentUUId string) error {
+func (this *EmailSendingService) SendEmailByContentUUId(contentUUId string) error {
 	var err error
 
 	// Get content object.
-	contentObject, err := GetContentObjectByUUId(contentUUId)
+	contentObject, err := this.contentService.GetContentObjectByUUId(contentUUId)
 	if err != nil {
 		println("Failed to get the content object from scheduler service.")
 		return errors.New("failed to get the content object from scheduler service")
@@ -48,18 +60,18 @@ func SendEmailByContentUUId(contentUUId string) error {
 	if currUnixTime >= contentObject.ReleaseDate {
 
 		// Get email content.
-		emailContent, err := GetEmailContentByContentUUId(contentUUId)
+		emailContent, err := this.contentService.GetEmailContentByContentUUId(contentUUId)
 		if err != nil {
 			fmt.Println("Failed to get email content by content UUId:", err)
 			return errors.New("failed to get email content by content UUId")
 		}
 
 		// Get email subscriber list.
-		subscriberEmailList := GetNewsletterSubscriberEmailsByNewsletterUUId(contentObject.NewsletterUUId)
+		subscriberEmailList := this.newsletterService.GetNewsletterSubscriberEmailsByNewsletterUUId(contentObject.NewsletterUUId)
 		if len(subscriberEmailList) > 0 {
 
 			// Send email.
-			err = smtp.SendMail(smtpHost+":"+smtpPort, authentification, fromAddress, subscriberEmailList, emailContent)
+			err = smtp.SendMail(this.smtpHost+":"+this.smtpPort, this.authentification, this.fromAddress, subscriberEmailList, emailContent)
 			if err != nil {
 				fmt.Println("Failed to send email:", err)
 				return errors.New("failed to send email")
