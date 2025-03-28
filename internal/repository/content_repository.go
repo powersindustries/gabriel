@@ -15,10 +15,12 @@ type ContentRepository interface {
 	GetRawContentByObject(contentObject *models.Content) ([]byte, error)
 }
 
-type contentRepository struct{}
+type contentRepository struct {
+	sqlDatabase *config.SQLDatabase
+}
 
-func CreateNewContentRepository() ContentRepository {
-	return &contentRepository{}
+func CreateNewContentRepository(sqlDatabase *config.SQLDatabase) ContentRepository {
+	return &contentRepository{sqlDatabase: sqlDatabase}
 }
 
 func (this *contentRepository) GetContentObjectByUUId(contentUUId string) (*models.Content, error) {
@@ -29,7 +31,7 @@ func (this *contentRepository) GetContentObjectByUUId(contentUUId string) (*mode
 	`
 
 	var content models.Content
-	err := config.Database.QueryRowContext(context.Background(), sqlQuery, contentUUId).
+	err := this.sqlDatabase.Database.QueryRowContext(context.Background(), sqlQuery, contentUUId).
 		Scan(&content.UUId, &content.Title, &content.ReleaseDate, &content.Type, &content.NewsletterUUId)
 
 	if err != nil || err == sql.ErrNoRows {

@@ -9,25 +9,30 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-var Database *sql.DB
+type SQLDatabase struct {
+	Database *sql.DB
+}
 
-func InitializeDatabase() {
+func CreateNewSQLDatabase() *SQLDatabase {
+	outputSQLDatabase := &SQLDatabase{}
+
 	dsn := "postgres://" + GetEnvVariables("db_user") + ":" + GetEnvVariables("db_pass") + "@localhost:5432/" + GetEnvVariables("db_name")
 
 	var err error
 
-	Database, err = sql.Open("pgx", dsn)
+	outputSQLDatabase.Database, err = sql.Open("pgx", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
-	Database.SetMaxOpenConns(10)
-	Database.SetMaxIdleConns(5)
-	Database.SetConnMaxLifetime(time.Hour)
+	outputSQLDatabase.Database.SetMaxOpenConns(10)
+	outputSQLDatabase.Database.SetMaxIdleConns(5)
+	outputSQLDatabase.Database.SetConnMaxLifetime(time.Hour)
 
-	if err := Database.PingContext(context.Background()); err != nil {
+	if err := outputSQLDatabase.Database.PingContext(context.Background()); err != nil {
 		log.Fatal("Database ping failed: ", err)
 	}
 
 	println("Database successfully connected.")
+	return outputSQLDatabase
 }

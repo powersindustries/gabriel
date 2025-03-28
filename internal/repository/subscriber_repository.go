@@ -13,17 +13,19 @@ type SubscriberRepository interface {
 	GetSubscriberEmailByUUId(uUId string) string
 }
 
-type subscriberRepository struct{}
+type subscriberRepository struct {
+	sqlDatabase *config.SQLDatabase
+}
 
-func CreateNewSubscriberRepository() SubscriberRepository {
-	return &subscriberRepository{}
+func CreateNewSubscriberRepository(sqlDatabase *config.SQLDatabase) SubscriberRepository {
+	return &subscriberRepository{sqlDatabase: sqlDatabase}
 }
 
 func (this *subscriberRepository) GetSubscriberEmailByUUId(uUId string) string {
 	sqlQuery := "SELECT uuid, email, newsletter_uuids FROM subscribers WHERE uuid = $1"
 	var subscriber models.Subscriber
 
-	err := config.Database.QueryRowContext(
+	err := this.sqlDatabase.Database.QueryRowContext(
 		context.Background(), sqlQuery, uUId,
 	).Scan(&subscriber.UUId, &subscriber.Email, pq.Array(&subscriber.NewsletterUUIds))
 

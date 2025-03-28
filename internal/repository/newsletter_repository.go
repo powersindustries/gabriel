@@ -14,10 +14,12 @@ type NewsletterRepository interface {
 	GetNewsletterByUUId(newsletterUUId string) (*models.Newsletter, error)
 }
 
-type newsletterRepository struct{}
+type newsletterRepository struct {
+	sqlDatabase *config.SQLDatabase
+}
 
-func CreateNewNewsletterRepository() NewsletterRepository {
-	return &newsletterRepository{}
+func CreateNewNewsletterRepository(sqlDatabase *config.SQLDatabase) NewsletterRepository {
+	return &newsletterRepository{sqlDatabase: sqlDatabase}
 }
 
 func (this *newsletterRepository) GetNewsletterByUUId(newsletterUUId string) (*models.Newsletter, error) {
@@ -28,7 +30,7 @@ func (this *newsletterRepository) GetNewsletterByUUId(newsletterUUId string) (*m
 	`
 
 	var newsletter models.Newsletter
-	err := config.Database.QueryRowContext(context.Background(), sqlQuery, newsletterUUId).
+	err := this.sqlDatabase.Database.QueryRowContext(context.Background(), sqlQuery, newsletterUUId).
 		Scan(&newsletter.UUId, &newsletter.Name, &newsletter.Description, &newsletter.ContactEmail, pq.Array(&newsletter.SubscriberList))
 
 	if err != nil || err == sql.ErrNoRows {

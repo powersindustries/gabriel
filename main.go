@@ -13,11 +13,12 @@ func main() {
 	fmt.Println("Gabriel.")
 
 	config.LoadEnvData()
-	config.InitializeDatabase()
 
-	contentRepository := repository.CreateNewContentRepository()
-	newsletterRepository := repository.CreateNewNewsletterRepository()
-	subscriberRepository := repository.CreateNewSubscriberRepository()
+	sqlDatabase := config.CreateNewSQLDatabase()
+
+	contentRepository := repository.CreateNewContentRepository(sqlDatabase)
+	newsletterRepository := repository.CreateNewNewsletterRepository(sqlDatabase)
+	subscriberRepository := repository.CreateNewSubscriberRepository(sqlDatabase)
 
 	contentService := services.CreateNewContentService(contentRepository)
 	subscriberService := services.CreateNewSubscriberService(subscriberRepository)
