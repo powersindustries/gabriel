@@ -30,8 +30,10 @@ func (this *contentRepository) GetContentObjectByUUId(contentUUId string) (*mode
 		WHERE uuid = $1
 	`
 
+	database := this.sqlDatabase.GetDatabaseInstance()
+
 	var content models.Content
-	err := this.sqlDatabase.Database.QueryRowContext(context.Background(), sqlQuery, contentUUId).
+	err := database.QueryRowContext(context.Background(), sqlQuery, contentUUId).
 		Scan(&content.UUId, &content.Title, &content.ReleaseDate, &content.Type, &content.NewsletterUUId)
 
 	if err != nil || err == sql.ErrNoRows {

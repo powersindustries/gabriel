@@ -29,8 +29,10 @@ func (this *newsletterRepository) GetNewsletterByUUId(newsletterUUId string) (*m
 		WHERE uuid = $1
 	`
 
+	database := this.sqlDatabase.GetDatabaseInstance()
+
 	var newsletter models.Newsletter
-	err := this.sqlDatabase.Database.QueryRowContext(context.Background(), sqlQuery, newsletterUUId).
+	err := database.QueryRowContext(context.Background(), sqlQuery, newsletterUUId).
 		Scan(&newsletter.UUId, &newsletter.Name, &newsletter.Description, &newsletter.ContactEmail, pq.Array(&newsletter.SubscriberList))
 
 	if err != nil || err == sql.ErrNoRows {

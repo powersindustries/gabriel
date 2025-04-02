@@ -10,7 +10,7 @@ import (
 )
 
 type SQLDatabase struct {
-	Database *sql.DB
+	database *sql.DB
 }
 
 func CreateNewSQLDatabase() *SQLDatabase {
@@ -20,19 +20,23 @@ func CreateNewSQLDatabase() *SQLDatabase {
 
 	var err error
 
-	outputSQLDatabase.Database, err = sql.Open("pgx", dsn)
+	outputSQLDatabase.database, err = sql.Open("pgx", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
-	outputSQLDatabase.Database.SetMaxOpenConns(10)
-	outputSQLDatabase.Database.SetMaxIdleConns(5)
-	outputSQLDatabase.Database.SetConnMaxLifetime(time.Hour)
+	outputSQLDatabase.database.SetMaxOpenConns(10)
+	outputSQLDatabase.database.SetMaxIdleConns(5)
+	outputSQLDatabase.database.SetConnMaxLifetime(time.Hour)
 
-	if err := outputSQLDatabase.Database.PingContext(context.Background()); err != nil {
+	if err := outputSQLDatabase.database.PingContext(context.Background()); err != nil {
 		log.Fatal("Database ping failed: ", err)
 	}
 
 	println("Database successfully connected.")
 	return outputSQLDatabase
+}
+
+func (this *SQLDatabase) GetDatabaseInstance() *sql.DB {
+	return this.database
 }

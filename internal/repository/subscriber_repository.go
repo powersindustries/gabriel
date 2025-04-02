@@ -25,7 +25,9 @@ func (this *subscriberRepository) GetSubscriberEmailByUUId(uUId string) string {
 	sqlQuery := "SELECT uuid, email, newsletter_uuids FROM subscribers WHERE uuid = $1"
 	var subscriber models.Subscriber
 
-	err := this.sqlDatabase.Database.QueryRowContext(
+	database := this.sqlDatabase.GetDatabaseInstance()
+
+	err := database.QueryRowContext(
 		context.Background(), sqlQuery, uUId,
 	).Scan(&subscriber.UUId, &subscriber.Email, pq.Array(&subscriber.NewsletterUUIds))
 
