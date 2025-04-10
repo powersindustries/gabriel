@@ -10,6 +10,6 @@ func CreateNewSubscriberService(repository repository.SubscriberRepository) *Sub
 	return &SubscriberService{subscriberRepository: repository}
 }
 
-func (this *SubscriberService) GetSubscriberEmailByUUId(uUId string) string {
-	return this.subscriberRepository.GetSubscriberEmailByUUId(uUId)
+func (subscriberServiceSelf *SubscriberService) GetSubscriberEmailByUUId(uUId string) string {
+	return subscriberServiceSelf.subscriberRepository.GetSubscriberEmailByUUId(uUId)
 }

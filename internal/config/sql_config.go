@@ -38,6 +38,6 @@ func CreateNewSQLDatabase() *SQLDatabase {
 	return outputSQLDatabase
 }
 
-func (this *SQLDatabase) GetDatabaseInstance() *sql.DB {
-	return this.database
+func (sQLDatabaseSelf *SQLDatabase) GetDatabaseInstance() *sql.DB {
+	return sQLDatabaseSelf.database
 }

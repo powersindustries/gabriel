@@ -28,7 +28,7 @@ func setEnvVariables(key string, value string) {
 	case "DB_PASS":
 		environmentVariables.DbPassword = value
 	default:
-		slog.Info("env key not found: ", key)
+		slog.Info("env key not found: ", "key", key)
 		return
 	}
 }
@@ -57,7 +57,7 @@ func GetEnvVariables(key string) string {
 func LoadEnvData() {
 	file, err := os.Open(".env")
 	if err != nil {
-		slog.Error("Failed to load .env file: ", err)
+		slog.Error("Failed to load .env file: ", "error", err)
 		return
 	}
 
@@ -74,7 +74,7 @@ func LoadEnvData() {
 
 		keyValues := strings.SplitN(line, "=", 2)
 		if len(keyValues) != 2 {
-			slog.Error("env key value not formatted correclty. Check line: ", line)
+			slog.Error("env key value not formatted correclty. Check line: ", "line", line)
 			return
 		}
 

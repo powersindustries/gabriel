@@ -24,14 +24,14 @@ func CreateNewSchedulerService(emailSendingService *EmailSendingService) *Schedu
 	return outputObject
 }
 
-func (this *SchedulerService) CycleContentScheduler() {
+func (schedulerServiceSelf *SchedulerService) CycleContentScheduler() {
 	slog.Info("Running content scheduler...")
 
-	scheduledContentUUIdsLength := len(this.scheduledContentUUIds)
+	scheduledContentUUIdsLength := len(schedulerServiceSelf.scheduledContentUUIds)
 	for x := 0; x < scheduledContentUUIdsLength; x++ {
-		currContentUUId := this.scheduledContentUUIds[x]
+		currContentUUId := schedulerServiceSelf.scheduledContentUUIds[x]
 
-		err := this.emailSendingService.SendEmailByContentUUId(currContentUUId)
+		err := schedulerServiceSelf.emailSendingService.SendEmailByContentUUId(currContentUUId)
 		if err != nil {
 			slog.Error("Failed to send email: ", err)
 			return
@@ -39,13 +39,13 @@ func (this *SchedulerService) CycleContentScheduler() {
 	}
 
 	// ToDo: Replace functionality with DEBUG flag.
-	if this.runCount == 2 {
+	if schedulerServiceSelf.runCount == 2 {
 		SetLifecycle(models.Stopping)
 		return
 	}
-	this.runCount++
+	schedulerServiceSelf.runCount++
 }
 
-func (this *SchedulerService) AddContentToScheduler(contentId string) {
-	this.scheduledContentUUIds = append(this.scheduledContentUUIds, contentId)
+func (schedulerServiceSelf *SchedulerService) AddContentToScheduler(contentId string) {
+	schedulerServiceSelf.scheduledContentUUIds = append(schedulerServiceSelf.scheduledContentUUIds, contentId)
 }
