@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"email_poc/internal/config"
 	"email_poc/internal/models"
-	"log"
+	"log/slog"
 
 	"github.com/lib/pq"
 )
@@ -36,7 +36,7 @@ func (this *newsletterRepository) GetNewsletterByUUId(newsletterUUId string) (*m
 		Scan(&newsletter.UUId, &newsletter.Name, &newsletter.Description, &newsletter.ContactEmail, pq.Array(&newsletter.SubscriberList))
 
 	if err != nil || err == sql.ErrNoRows {
-		log.Println("Error getting newsletter: ", err)
+		slog.Error("Error getting newsletter: ", err)
 		return nil, err
 	}
 

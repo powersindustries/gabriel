@@ -7,6 +7,7 @@ import (
 	"email_poc/internal/models"
 	"errors"
 	"log"
+	"log/slog"
 	"os"
 )
 
@@ -37,7 +38,7 @@ func (this *contentRepository) GetContentObjectByUUId(contentUUId string) (*mode
 		Scan(&content.UUId, &content.Title, &content.ReleaseDate, &content.Type, &content.NewsletterUUId)
 
 	if err != nil || err == sql.ErrNoRows {
-		log.Println("Error fetching content:", err)
+		slog.Error("Error fetching content:", err)
 		return nil, err
 	}
 

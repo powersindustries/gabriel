@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"log/slog"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -33,7 +34,7 @@ func CreateNewSQLDatabase() *SQLDatabase {
 		log.Fatal("Database ping failed: ", err)
 	}
 
-	println("Database successfully connected.")
+	slog.Info("Database successfully connected.")
 	return outputSQLDatabase
 }
 

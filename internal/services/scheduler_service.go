@@ -2,6 +2,7 @@ package services
 
 import (
 	"email_poc/internal/models"
+	"log/slog"
 )
 
 type SchedulerService struct {
@@ -24,7 +25,7 @@ func CreateNewSchedulerService(emailSendingService *EmailSendingService) *Schedu
 }
 
 func (this *SchedulerService) CycleContentScheduler() {
-	println("Running content scheduler...")
+	slog.Info("Running content scheduler...")
 
 	scheduledContentUUIdsLength := len(this.scheduledContentUUIds)
 	for x := 0; x < scheduledContentUUIdsLength; x++ {
@@ -32,7 +33,7 @@ func (this *SchedulerService) CycleContentScheduler() {
 
 		err := this.emailSendingService.SendEmailByContentUUId(currContentUUId)
 		if err != nil {
-			println("Failed to send email: ", err)
+			slog.Error("Failed to send email: ", err)
 			return
 		}
 	}

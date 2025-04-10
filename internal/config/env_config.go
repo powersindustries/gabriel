@@ -3,7 +3,7 @@ package config
 import (
 	"bufio"
 	"email_poc/internal/models"
-	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 )
@@ -12,7 +12,7 @@ var environmentVariables models.Env
 
 func setEnvVariables(key string, value string) {
 	if len(key) == 0 || len(value) == 0 {
-		fmt.Println("env key or value is empty: ", key, value)
+		slog.Info("env key or value is empty: ", key, value)
 		return
 	}
 
@@ -28,7 +28,7 @@ func setEnvVariables(key string, value string) {
 	case "DB_PASS":
 		environmentVariables.DbPassword = value
 	default:
-		fmt.Println("env key not found: ", key)
+		slog.Info("env key not found: ", key)
 		return
 	}
 }
@@ -57,7 +57,7 @@ func GetEnvVariables(key string) string {
 func LoadEnvData() {
 	file, err := os.Open(".env")
 	if err != nil {
-		fmt.Println("Failed to load .env file: ", err)
+		slog.Error("Failed to load .env file: ", err)
 		return
 	}
 
@@ -74,7 +74,7 @@ func LoadEnvData() {
 
 		keyValues := strings.SplitN(line, "=", 2)
 		if len(keyValues) != 2 {
-			fmt.Println("env key value not formatted correclty. Check line: ", line)
+			slog.Error("env key value not formatted correclty. Check line: ", line)
 			return
 		}
 

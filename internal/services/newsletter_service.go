@@ -2,6 +2,7 @@ package services
 
 import (
 	"email_poc/internal/repository"
+	"log/slog"
 )
 
 type NewsletterService struct {
@@ -20,13 +21,13 @@ func (this *NewsletterService) GetNewsletterSubscriberEmailsByNewsletterUUId(new
 
 	newsletterObject, err := this.newsletterRepository.GetNewsletterByUUId(newsletterUUId)
 	if err != nil {
-		println("Failed to find the newsletter UUID with the id: " + newsletterUUId)
+		slog.Error("Failed to find the newsletter UUID with the id: " + newsletterUUId)
 		return nil
 	}
 
 	subscriberListSize := len(newsletterObject.SubscriberList)
 	if subscriberListSize == 0 {
-		println("Newsletter UUID: " + newsletterUUId + " has 0 subscibers.")
+		slog.Error("Newsletter UUID: " + newsletterUUId + " has 0 subscibers.")
 		return nil
 	}
 

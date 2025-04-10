@@ -3,7 +3,7 @@ package services
 import (
 	"email_poc/internal/config"
 	"errors"
-	"fmt"
+	"log/slog"
 	"net/smtp"
 	"time"
 )
@@ -29,13 +29,13 @@ func CreateNewEmailSendingService(contentService *ContentService, newsletterServ
 	outputObject.smtpPort = "587"
 	outputObject.fromAddress = config.GetEnvVariables("email_user")
 	if len(outputObject.fromAddress) == 0 {
-		println("Failed to get the host from address.")
+		slog.Error("Failed to get the host from address.")
 		return nil
 	}
 
 	outputObject.password = config.GetEnvVariables("email_password")
 	if len(outputObject.password) == 0 {
-		println("Failed to get the password from address.")
+		slog.Error("Failed to get the password from address.")
 		return nil
 	}
 
@@ -51,7 +51,7 @@ func (this *EmailSendingService) SendEmailByContentUUId(contentUUId string) erro
 	// Get content object.
 	contentObject, err := this.contentService.GetContentObjectByUUId(contentUUId)
 	if err != nil {
-		println("Failed to get the content object from scheduler service.")
+		slog.Error("Failed to get the content object from scheduler service.")
 		return errors.New("failed to get the content object from scheduler service")
 	}
 
@@ -62,7 +62,7 @@ func (this *EmailSendingService) SendEmailByContentUUId(contentUUId string) erro
 		// Get email content.
 		emailContent, err := this.contentService.GetEmailContentByContentUUId(contentUUId)
 		if err != nil {
-			fmt.Println("Failed to get email content by content UUId:", err)
+			slog.Error("Failed to get email content by content UUId:", err)
 			return errors.New("failed to get email content by content UUId")
 		}
 
@@ -73,7 +73,7 @@ func (this *EmailSendingService) SendEmailByContentUUId(contentUUId string) erro
 			// Send email.
 			err = smtp.SendMail(this.smtpHost+":"+this.smtpPort, this.authentification, this.fromAddress, subscriberEmailList, emailContent)
 			if err != nil {
-				fmt.Println("Failed to send email:", err)
+				slog.Error("Failed to send email:", err)
 				return errors.New("failed to send email")
 			}
 		}

@@ -5,7 +5,7 @@ import (
 	"email_poc/internal/models"
 	"email_poc/internal/repository"
 	"errors"
-	"fmt"
+	"log/slog"
 
 	"github.com/yuin/goldmark"
 )
@@ -30,7 +30,7 @@ func (this *ContentService) GetEmailContentByContentUUId(contentUUId string) ([]
 
 	rawContent, err := this.contentRepository.GetRawContentByObject(contentObject)
 	if err != nil {
-		println("Failed to get the raw content from the content object.")
+		slog.Error("Failed to get the raw content from the content object.")
 		return nil, errors.New("failed to get the raw content from the content object")
 	}
 
@@ -44,7 +44,7 @@ func (this *ContentService) GetEmailContentByContentUUId(contentUUId string) ([]
 		var buf bytes.Buffer
 		err := goldmark.Convert(rawContent, &buf)
 		if err != nil {
-			fmt.Println("Error:", err)
+			slog.Error("Error:", err)
 			return nil, errors.New("failed to markdown to html")
 		}
 

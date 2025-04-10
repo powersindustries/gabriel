@@ -5,12 +5,12 @@ import (
 	"email_poc/internal/models"
 	"email_poc/internal/repository"
 	"email_poc/internal/services"
-	"fmt"
+	"log/slog"
 	"time"
 )
 
 func main() {
-	fmt.Println("Gabriel.")
+	slog.Info("Gabriel.")
 
 	config.LoadEnvData()
 
@@ -35,7 +35,7 @@ func main() {
 		switch state {
 		case models.Initialing:
 			{
-				fmt.Println("Gabriel Initializing.")
+				slog.Info("Gabriel Initializing.")
 
 				// ToDo: Debug - Remove and replace with endpoint.
 				schedulerService.AddContentToScheduler("ea36aeeb-f1d4-49cf-9f1d-34bb47d928d7")
@@ -54,12 +54,12 @@ func main() {
 			}
 		case models.Stopping:
 			{
-				fmt.Println("Gabriel Stopping.")
+				slog.Info("Gabriel Stopping.")
 				return
 			}
 		default:
 			{
-				fmt.Println("Reached unreachable state. Exiting program.")
+				slog.Error("Reached unreachable state. Exiting program.")
 
 				services.SetLifecycle(models.Stopping)
 			}
